@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresql-db
+  namespace: kong
+spec:
+  serviceName: postgresql-db-service
+  selector:
+    matchLabels:
+      app: postgresql-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresql-db
+    spec:
+      nodeSelector:
+        disktype: ssd
+      containers:
+        - name: postgresql-db
+          image: postgres:9.6
+          ports:
+          - containerPort: 5432
+            name: postgresql-db
+          volumeMounts:
+          - name: postgres-persistent-storage
+            mountPath: /var/lib/postgresql/data
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_DB
+              value: postgres  
+            - name: POSTGRES_PASSWORD
+              value: kong
+            - name: PGDATA
+              value: /var/lib/postgresql/data/kong
+      volumes:
+      - name: postgres-persistent-storage
+        persistentVolumeClaim:
+          claimName: postgres-persistent-volume-claim

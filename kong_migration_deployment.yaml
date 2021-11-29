@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kong-migration-deployment
+  name: kong-migration-deployment
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong-migration-deployment
+  template:
+    metadata:
+      annotations:
+        kuma.io/gateway: enabled
+        prometheus.io/port: "8100"
+        prometheus.io/scrape: "true"
+        traffic.sidecar.istio.io/includeInboundPorts: ""
+      labels:
+        app: kong-migration-deployment
+    spec:
+      imagePullSecrets:
+        - name: docker-registry
+      containers:
+      - name: kong-migration
+        image: kong:latest
+        imagePullPolicy: IfNotPresent
+        # command: ["/bin/sh", "-c", "kong migrations bootstrap && kong migrations up && kong migrations finish"]
+        command: ["/bin/sh", "-c", "kong migrations bootstrap --vv"]        
+        env:
+        - name: KONG_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: kong-migration-secret
+              key: kong-database
+        - name: KONG_PG_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: kong-migration-secret
+              key: kong-pg-database
+        - name: KONG_PG_HOST
+          valueFrom:
+            secretKeyRef:
+              name: kong-migration-secret
+              key: kong-pg-host
+        - name: KONG_PG_USER
+          valueFrom:
+            secretKeyRef:
+              name: kong-migration-secret
+              key: kong-pg-user
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kong-migration-secret
+              key: kong-pg-password
+        - name: KONG_LUA_PACKAGE_PATH
+          value: ./?.lua;./?/init.lua;

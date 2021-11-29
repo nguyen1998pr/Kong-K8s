@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: motel-api-deployment
+  labels:
+    app: motelapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: motelapi
+  template:
+    metadata:
+      labels:
+        app: motelapi
+    spec:
+      imagePullSecrets:
+        - name: docker-registry
+      containers:
+      - name: motelapi
+        image: motel-api:non-root-production
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: motel-api-secret
+                key: database-host
+          - name: DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: motel-api-secret
+                key: database-port
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: motel-api-secret
+                key: database-name

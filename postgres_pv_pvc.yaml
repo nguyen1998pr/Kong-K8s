@@ -1,0 +1,30 @@
+# Tạo Persistent Volume cho Kong
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-persistent-volume
+  namespace: kong
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+# Tạo Persistent Volume Claim cho Kong
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: kong
+  name: postgres-persistent-volume-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

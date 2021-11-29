@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga-prepare
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga-prepare
+  template:
+    metadata:
+      labels:
+        name: konga-prepare
+        app: konga-prepare
+    spec:
+      containers:
+      - name: konga-prepare
+        image: pantsel/konga:latest
+        command: ["/bin/sh", "-c", "node ./bin/konga.js prepare -a postgres --uri postgresql://postgres:kong@kong-db:5432/konga"]
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_ADAPTER
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: database-adapter
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: database-host
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: database-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: database-password
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: database
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: database-port
+        - name: KONGA_HOOK_TIMEOUT
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: konga-hook-timeout
+        - name: NODE_ENV
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: node-env
+        - name: TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: token-secret
