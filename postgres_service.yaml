@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kong-db
-  namespace: kong
+  name: kong-database
 spec:
+  #clusterIP: None
   ports:
-  - port: 5432
-  selector:
-    app: postgresql-db
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  #selector:
+    #app: postgresql-db
     #clusterIP: None

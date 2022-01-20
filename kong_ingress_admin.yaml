@@ -4,7 +4,7 @@ metadata:
   #annotations:
     #kubernetes.io/ingress.class: nginx
     #nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  name: konga
+  name: kong-admin
   namespace: kong
 spec:
   ingressClassName: kong
@@ -14,5 +14,5 @@ spec:
       - path: /
         pathType: Prefix
         backend:
-          serviceName: konga-service
-          servicePort: 1337
+          serviceName: kong-admin
+          servicePort: 8001

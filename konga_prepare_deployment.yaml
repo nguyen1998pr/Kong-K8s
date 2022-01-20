@@ -17,7 +17,7 @@ spec:
       containers:
       - name: konga-prepare
         image: pantsel/konga:latest
-        command: ["/bin/sh", "-c", "node ./bin/konga.js prepare -a postgres --uri postgresql://postgres:kong@kong-db:5432/konga"]
+        command: ["/bin/sh", "-c", "node ./bin/konga.js prepare -a postgres --uri postgresql://kong:kong@10.60.156.162:5432/konga"]
         imagePullPolicy: IfNotPresent
         env:
         - name: DB_ADAPTER

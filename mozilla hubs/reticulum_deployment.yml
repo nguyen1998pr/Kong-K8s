@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: reticulum-deployment
+  name: reticulum-deployment
+  namespace: mozilla
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reticulum-deployment
+  template:
+    metadata:
+      labels:
+        app: reticulum-deployment
+    spec:
+      imagePullSecrets: 
+        - name: docker-registry
+      containers:
+      - name: reticulum-deployment
+        image: reticulum_ret:latest
+        imagePullPolicy: IfNotPresent
+        command: ["bash", "-c", "source ~/.bashrc; mix deps.get; mix ecto.create; mix phx.server"]
+        env:
+        - name: DB_HOST
+          value: 10.60.156.165
+        ports:
+        - containerPort: 4000
+          protocol: TCP

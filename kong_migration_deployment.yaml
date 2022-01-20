@@ -23,11 +23,11 @@ spec:
       imagePullSecrets:
         - name: docker-registry
       containers:
-      - name: kong-migration
+      - name: kong-migration-deployment
         image: kong:latest
         imagePullPolicy: IfNotPresent
-        # command: ["/bin/sh", "-c", "kong migrations bootstrap && kong migrations up && kong migrations finish"]
-        command: ["/bin/sh", "-c", "kong migrations bootstrap --vv"]        
+        command: ["/bin/sh", "-c", "kong migrations bootstrap --vv && kong migrations up && kong migrations finish"]
+        #command: ["/bin/sh", "-c", "kong migrations bootstrap --vv"]        
         env:
         - name: KONG_DATABASE
           valueFrom:
@@ -54,5 +54,5 @@ spec:
             secretKeyRef:
               name: kong-migration-secret
               key: kong-pg-password
-        - name: KONG_LUA_PACKAGE_PATH
-          value: ./?.lua;./?/init.lua;
+        #- name: KONG_LUA_PACKAGE_PATH
+          #value: ./?.lua;./?/init.lua;

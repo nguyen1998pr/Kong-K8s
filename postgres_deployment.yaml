@@ -14,8 +14,6 @@ spec:
       labels:
         app: postgresql-db
     spec:
-      nodeSelector:
-        disktype: ssd
       containers:
         - name: postgresql-db
           image: postgres:9.6
@@ -26,10 +24,10 @@ spec:
           - name: postgres-persistent-storage
             mountPath: /var/lib/postgresql/data
           env:
-            - name: POSTGRES_USER
-              value: postgres
-            - name: POSTGRES_DB
-              value: postgres  
+            #- name: POSTGRES_USER
+            #  value: postgres
+            #- name: POSTGRES_DB
+            #  value: kong  
             - name: POSTGRES_PASSWORD
               value: kong
             - name: PGDATA
